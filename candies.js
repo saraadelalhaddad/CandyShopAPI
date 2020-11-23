@@ -1,6 +1,6 @@
-// import sourworm from "./sourworm.jpg";
-// import rainbowstrings from "./rainbowstrings.jpg";
-// import peachrings from "./peachrings.jpg";
+// const sourworm = require("./sourworm.jpg");
+// const rainbowstrings = require("./rainbowstrings.jpg");
+// const peachrings = require("./peachrings.jpg");
 
 const candies = [
   {

@@ -1,14 +1,17 @@
+/*** Setup ***/
 const express = require("express");
 const cors = require("cors");
+const bodyParser = require("body-parser");
+let candies = require("./candies");
+const slugify = require("slugify");
+
 const app = express();
 app.use(cors());
+app.use(bodyParser.json());
 
-let candies = require("./candies");
-
-/*** ***/
-app.get("/", (req, res) => {
-  console.log("HELLO");
-  res.json({ message: "Hello World" });
+/*** Code ***/
+app.get("/candies", (req, res) => {
+  res.json(candies);
 });
 
 app.delete("/candies/:candyId", (req, res) => {
@@ -22,8 +25,12 @@ app.delete("/candies/:candyId", (req, res) => {
   }
 });
 
-app.get("/candies", (req, res) => {
-  res.json(candies);
+app.post("/candies", (req, res) => {
+  const id = candies[candies.length - 1].id + 1;
+  const slug = slugify(req.body.name, { lower: true });
+  const newCandy = { id, slug, ...req.body }; // id, slug are equivalent to id: id, slug: slug
+  candies.push(newCandy);
+  res.status(201).json(newCandy);
 });
 
 app.listen(8000, () => {
