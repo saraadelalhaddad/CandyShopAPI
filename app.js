@@ -33,6 +33,18 @@ app.post("/candies", (req, res) => {
   res.status(201).json(newCandy);
 });
 
+app.put("/candies/:candyId", (req, res) => {
+  const { candyId } = req.params;
+  const foundCandy = candies.find((candy) => candy.id === +candyId);
+  if (foundCandy) {
+    for (const key in req.body) foundCandy[key] = req.body[key];
+    foundCandy.slug = slugify(req.body.name, { lower: true });
+    res.status(204).end();
+  } else {
+    res.status(404).json({ message: "Candy not found" });
+  }
+});
+
 app.listen(8000, () => {
   console.log("The application is running on localhost:8000");
 });
