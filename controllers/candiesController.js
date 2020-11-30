@@ -1,35 +1,50 @@
 let candies = require("../candies");
 const slugify = require("slugify");
+const Candy = require("../db/models/Candy");
 
-exports.candyCreate = (req, res) => {
-  const id = candies[candies.length - 1].id + 1;
-  const slug = slugify(req.body.name, { lower: true });
-  const newCandy = { id, slug, ...req.body }; // id, slug are equivalent to id: id, slug: slug
-  candies.push(newCandy);
-  res.status(201).json(newCandy);
-};
-
-exports.candyList = (req, res) => res.json(candies);
-
-exports.candyUpdate = (req, res) => {
-  const { candyId } = req.params;
-  const foundCandy = candies.find((candy) => candy.id === +candyId);
-  if (foundCandy) {
-    for (const key in req.body) foundCandy[key] = req.body[key];
-    foundCandy.slug = slugify(req.body.name, { lower: true });
-    res.status(204).end();
-  } else {
-    res.status(404).json({ message: "Candy not found" });
+exports.fetchCandy = async (candyId, next) => {
+  try {
+    const candy = await Candy.findByPK(candyId);
+    return candy;
+  } catch (error) {
+    next(error);
   }
 };
 
-exports.candyDelete = (req, res) => {
-  const { candyId } = req.params;
-  const foundCandy = candies.find((candy) => candy.id === +candyId);
-  if (foundCandy) {
-    candies = candies.filter((candy) => candy !== foundCandy);
+exports.candyCreate = (req, res, next) => {
+  try {
+    const id = candies[candies.length - 1].id + 1;
+    const slug = slugify(req.body.name, { lower: true });
+    const newCandy = { id, slug, ...req.body }; // id, slug are equivalent to id: id, slug: slug
+    candies.push(newCandy);
+    res.status(201).json(newCandy);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.candyList = (req, res) => {
+  try {
+    res.json(candies);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.candyUpdate = async (req, res, next) => {
+  try {
+    await req.candy.update(req.body);
     res.status(204).end();
-  } else {
-    res.status(404).json({ message: "Candy not found" });
+  } catch (err) {
+    next(error);
+  }
+};
+
+exports.candyDelete = async (req, res, next) => {
+  try {
+    await req.candy.destroy();
+    res.status(204).end();
+  } catch (err) {
+    next(error);
   }
 };

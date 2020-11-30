@@ -5,8 +5,21 @@ const {
   candyList,
   candyUpdate,
   candyDelete,
+  fetchCandy,
 } = require("../controllers/candiesController");
 const slugify = require("slugify");
+
+router.param("candyId", async (req, res, next, candyId) => {
+  const candy = await fetchCandy(candyId, next);
+  if (candy) {
+    req.candy = candy;
+    next();
+  } else {
+    const err = new Error("Candy Not Found");
+    err.status = 404;
+    next(err);
+  }
+});
 
 // Candy Create
 router.post("/", candyCreate);
