@@ -1,6 +1,4 @@
-let candies = require("../candies");
-const slugify = require("slugify");
-const Candy = require("../db/models/Candy");
+const { Candy } = require("../db/models");
 
 exports.fetchCandy = async (candyId, next) => {
   try {
@@ -11,20 +9,23 @@ exports.fetchCandy = async (candyId, next) => {
   }
 };
 
-exports.candyCreate = (req, res, next) => {
+exports.candyCreate = async (req, res, next) => {
   try {
-    const id = candies[candies.length - 1].id + 1;
-    const slug = slugify(req.body.name, { lower: true });
-    const newCandy = { id, slug, ...req.body }; // id, slug are equivalent to id: id, slug: slug
-    candies.push(newCandy);
+    if (req.file) {
+      req.body.image = `http://${req.get("host")}/media/${req.file.filename}`;
+    }
+    const newCandy = await Candy.create(req.body);
     res.status(201).json(newCandy);
   } catch (error) {
     next(error);
   }
 };
 
-exports.candyList = (req, res) => {
+exports.candyList = async (req, res, next) => {
   try {
+    const candies = await Candy.findAll({
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+    });
     res.json(candies);
   } catch (error) {
     next(error);
@@ -33,6 +34,9 @@ exports.candyList = (req, res) => {
 
 exports.candyUpdate = async (req, res, next) => {
   try {
+    if (req.file) {
+      req.body.image = `http://${req.get("host")}/media/${req.file.filename}`;
+    }
     await req.candy.update(req.body);
     res.status(204).end();
   } catch (err) {

@@ -4,11 +4,15 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const candiesRouter = require("./routes/candies");
 const db = require("./db/models");
+const path = require("path");
 
 const app = express();
+const mediaPath = path.join(__dirname, "media");
+
 app.use(cors());
 app.use(bodyParser.json());
 app.use("/candies", candiesRouter);
+app.use("/media", express.static(mediaPath));
 
 // NOT FOUND PATH MIDDLEWARE
 app.use((req, res, next) => {

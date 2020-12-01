@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const upload = require("../middleware/multer");
+const path = require("path");
+
 const {
   candyCreate,
   candyList,
@@ -22,13 +25,13 @@ router.param("candyId", async (req, res, next, candyId) => {
 });
 
 // Candy Create
-router.post("/", candyCreate);
+router.post("/", upload.single("image"), candyCreate);
 
 // Candy List
 router.get("/", candyList);
 
 // Candy Update
-router.put("/:candyId", candyUpdate);
+router.put("/:candyId", upload.single("image"), candyUpdate);
 
 // Candy Delete
 router.delete("/:candyId", candyDelete);
