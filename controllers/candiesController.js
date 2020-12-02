@@ -1,4 +1,4 @@
-const { Candy } = require("../db/models");
+const { Candy, Bakery } = require("../db/models");
 
 exports.fetchCandy = async (candyId, next) => {
   try {
@@ -9,22 +9,15 @@ exports.fetchCandy = async (candyId, next) => {
   }
 };
 
-exports.candyCreate = async (req, res, next) => {
-  try {
-    if (req.file) {
-      req.body.image = `http://${req.get("host")}/media/${req.file.filename}`;
-    }
-    const newCandy = await Candy.create(req.body);
-    res.status(201).json(newCandy);
-  } catch (error) {
-    next(error);
-  }
-};
-
 exports.candyList = async (req, res, next) => {
   try {
     const candies = await Candy.findAll({
-      attributes: { exclude: ["createdAt", "updatedAt"] },
+      attributes: { exclude: ["bakeryId", "createdAt", "updatedAt"] },
+      include: {
+        model: Bakery,
+        as: "bakery",
+        attributes: ["name"],
+      },
     });
     res.json(candies);
   } catch (error) {
