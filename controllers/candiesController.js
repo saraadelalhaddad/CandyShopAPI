@@ -2,7 +2,7 @@ const { Candy, Bakery } = require("../db/models");
 
 exports.fetchCandy = async (candyId, next) => {
   try {
-    const candy = await Candy.findByPK(candyId);
+    const candy = await Candy.findByPk(candyId);
     return candy;
   } catch (error) {
     next(error);

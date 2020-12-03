@@ -7,9 +7,9 @@ const {
   candyCreate,
   bakeryCreate,
   bakeryList,
-  bakeryUpdate,
-  bakeryDelete,
-  fetchBakery,
+  //   bakeryUpdate,
+  //   bakeryDelete,
+  //   fetchBakery,
 } = require("../controllers/bakeriesController");
 
 // Candy Create
