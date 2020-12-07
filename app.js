@@ -4,6 +4,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const candiesRouter = require("./routes/candies");
 const bakeriesRouter = require("./routes/bakeries");
+const userRoutes = require("./routes/users");
 const db = require("./db/models");
 const path = require("path");
 
@@ -12,6 +13,8 @@ const mediaPath = path.join(__dirname, "media");
 
 app.use(cors());
 app.use(bodyParser.json());
+
+app.use(userRoutes);
 app.use("/candies", candiesRouter);
 app.use("/bakeries", bakeriesRouter);
 app.use("/media", express.static(mediaPath));
