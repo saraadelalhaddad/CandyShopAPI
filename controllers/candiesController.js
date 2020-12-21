@@ -16,7 +16,7 @@ exports.candyList = async (req, res, next) => {
       include: {
         model: Bakery,
         as: "bakery",
-        attributes: ["name"],
+        attributes: ["name", "slug"],
       },
     });
     res.json(candies);
@@ -32,7 +32,7 @@ exports.candyUpdate = async (req, res, next) => {
     }
     await req.candy.update(req.body);
     res.status(204).end();
-  } catch (err) {
+  } catch (error) {
     next(error);
   }
 };
@@ -41,7 +41,7 @@ exports.candyDelete = async (req, res, next) => {
   try {
     await req.candy.destroy();
     res.status(204).end();
-  } catch (err) {
+  } catch (error) {
     next(error);
   }
 };

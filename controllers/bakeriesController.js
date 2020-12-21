@@ -22,9 +22,10 @@ exports.bakeryCreate = async (req, res, next) => {
 };
 
 exports.bakeryList = async (req, res, next) => {
+  console.log("0");
   try {
     const bakeries = await Bakery.findAll({
-      attributes: ["id", "name"],
+      attributes: { exclude: ["createdAt", "updatedAt"] },
       include: {
         model: Candy,
         as: "candies",

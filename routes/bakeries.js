@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const upload = require("../middleware/multer");
 const path = require("path");
+const passport = require("passport");
 
 const {
   candyCreate,
@@ -16,7 +17,12 @@ const {
 router.post("/:bakeryId/candies", upload.single("image"), candyCreate);
 
 // Bakery Create
-router.post("/", upload.single("image"), bakeryCreate);
+router.post(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  upload.single("image"),
+  bakeryCreate
+);
 
 // Bakery List
 router.get("/", bakeryList);

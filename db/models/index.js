@@ -43,7 +43,7 @@ Object.keys(db).forEach((modelName) => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-// Relations
+// Relationship - One Bakery has Many Candies
 db.Bakery.hasMany(db.Candy, {
   as: "candies",
   foreignKey: { fieldName: "bakeryId", allowNull: false },
@@ -51,6 +51,24 @@ db.Bakery.hasMany(db.Candy, {
 db.Candy.belongsTo(db.Bakery, {
   as: "bakery",
   foreignKey: { fieldName: "bakeryId" },
+});
+
+// Relationship - One-to-One
+db.User.hasOne(db.Bakery, { as: "bakery", foreignKey: "userId" });
+db.Bakery.belongsTo(db.User, { as: "user" });
+
+// Relationship - One User has Many Orders
+db.User.hasMany(db.Order, { as: "orders", foreignKey: "userId" });
+db.Order.belongsTo(db.User, { as: "user" });
+
+// Relationship - Many-to-Many
+db.Order.belongsToMany(db.Candy, {
+  through: db.OrderItem,
+  foreignKey: "orderId",
+});
+db.Candy.belongsToMany(db.Order, {
+  through: db.OrderItem,
+  foreignKey: "candyId",
 });
 
 module.exports = db;
